@@ -67,15 +67,15 @@ window.navigateTo = async function(viewName, params = {}) {
           await window.renderAdminView(container);
         } else {
           let attempts = 0;
-          while (typeof window.renderAdminView !== "function" && attempts < 15) {
+          while (typeof window.renderAdminView !== "function" && attempts < 20) {
             await new Promise(r => setTimeout(r, 100));
             attempts++;
           }
           if (typeof window.renderAdminView === "function") {
             await window.renderAdminView(container);
           } else {
-            console.warn("renderAdminView not found, falling back to dashboard");
-            await window.renderDashboardView(container);
+            console.error("renderAdminView module could not be initialized");
+            throw new Error("Settings module initialization failed. Please hard-refresh your browser (Ctrl+F5).");
           }
         }
         break;
