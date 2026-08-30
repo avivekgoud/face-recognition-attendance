@@ -13,7 +13,7 @@ from ..schemas.person import (
     PersonCreate, PersonUpdate, PersonOut, PersonDetailOut, 
     AttendanceSummaryStats, FaceEnrollRequest, BiometricEnrollItem
 )
-from ..services.auth_service import get_current_user
+from ..services.auth_service import get_current_user, get_current_user_optional
 from ..services.crypto_service import crypto_service
 from ..services.face_service import face_service
 from ..services.audit_service import audit_service
@@ -59,7 +59,7 @@ def create_person(
     payload: PersonCreate,
     request: Request,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     # Validate identifier uniqueness
     if db.query(Person).filter(Person.identifier == payload.identifier).first():
@@ -248,7 +248,7 @@ def enroll_faces(
     payload: FaceEnrollRequest,
     request: Request,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     person = db.query(Person).filter(Person.id == id).first()
     if not person:
