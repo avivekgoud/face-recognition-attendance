@@ -17,12 +17,18 @@ window.navigateTo = async function(viewName, params = {}) {
   const navItems = ["dashboard", "live", "people", "history", "reports", "admin"];
   navItems.forEach(item => {
     const el = document.getElementById(`nav-link-${item}`);
+    const mobEl = document.getElementById(`mob-nav-${item}`);
+    const isActive = (item === viewName || (item === "admin" && viewName === "settings"));
+    
     if (el) {
-      if (item === viewName) {
-        el.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-500/25 transition-all";
-      } else {
-        el.className = "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all";
-      }
+      el.className = isActive 
+        ? "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-500/25 transition-all"
+        : "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all";
+    }
+    if (mobEl) {
+      mobEl.className = isActive
+        ? "px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-md shadow-blue-500/25 shrink-0 whitespace-nowrap transition-all"
+        : "px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 whitespace-nowrap transition-all";
     }
   });
 
@@ -147,8 +153,8 @@ function updateClock() {
   const clockEl = document.getElementById("header-live-clock");
   if (!clockEl) return;
   const now = new Date();
-  const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  clockEl.innerText = now.toLocaleDateString('en-US', options);
+  clockEl.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  clockEl.title = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 // Auth UI status updater

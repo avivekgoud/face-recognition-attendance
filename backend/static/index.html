@@ -91,12 +91,12 @@
           </nav>
 
           <!-- Right Global Tools: Search + Live Clock + Dark Mode + Profile -->
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 sm:gap-3 shrink-0">
             
             <!-- Global Instant Search -->
-            <div id="global-search-wrapper" class="relative hidden sm:block">
+            <div id="global-search-wrapper" class="relative hidden sm:block shrink-0">
               <div class="relative">
-                <input type="text" id="global-search-input" oninput="window.handleGlobalSearchInput(this.value)" placeholder="Global Person Search..." class="w-48 md:w-60 pl-8 pr-4 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-xs text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 transition-all">
+                <input type="text" id="global-search-input" oninput="window.handleGlobalSearchInput(this.value)" placeholder="Global Person Search..." class="w-40 md:w-56 pl-8 pr-4 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-xs text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 transition-all">
                 <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
               </div>
               
@@ -105,31 +105,31 @@
             </div>
 
             <!-- Live Clock -->
-            <div class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-mono font-medium">
-              <svg class="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span id="header-live-clock">--:--:--</span>
+            <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-mono font-medium whitespace-nowrap shrink-0">
+              <svg class="w-3.5 h-3.5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span id="header-live-clock" class="whitespace-nowrap">--:--:--</span>
             </div>
 
             <!-- Dark / Light Theme Toggle -->
-            <button onclick="window.toggleTheme()" title="Toggle Theme" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+            <button onclick="window.toggleTheme()" title="Toggle Theme" class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shrink-0">
               <svg class="w-4 h-4 hidden dark:block text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
               <svg class="w-4 h-4 block dark:hidden text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
             </button>
 
             <!-- Admin Authentication Pill -->
-            <div id="auth-status-container"></div>
+            <div id="auth-status-container" class="shrink-0"></div>
 
           </div>
         </div>
 
         <!-- Mobile Secondary Nav Pill Bar -->
-        <div class="lg:hidden flex items-center justify-between overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800 gap-2 no-scrollbar">
-          <button onclick="window.navigateTo('dashboard')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">Dashboard</button>
-          <button onclick="window.navigateTo('live')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-600 shrink-0">Live Camera</button>
-          <button onclick="window.navigateTo('people')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">People</button>
-          <button onclick="window.navigateTo('history')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">History</button>
-          <button onclick="window.navigateTo('reports')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">Reports</button>
-          <button onclick="window.navigateTo('admin')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">Settings</button>
+        <div class="lg:hidden flex items-center justify-between overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800 gap-1.5 no-scrollbar">
+          <button id="mob-nav-dashboard" onclick="window.navigateTo('dashboard')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0 whitespace-nowrap">Dashboard</button>
+          <button id="mob-nav-live" onclick="window.navigateTo('live')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0 whitespace-nowrap">Live Kiosk</button>
+          <button id="mob-nav-people" onclick="window.navigateTo('people')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0 whitespace-nowrap">People</button>
+          <button id="mob-nav-history" onclick="window.navigateTo('history')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0 whitespace-nowrap">History</button>
+          <button id="mob-nav-reports" onclick="window.navigateTo('reports')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0 whitespace-nowrap">Reports</button>
+          <button id="mob-nav-admin" onclick="window.navigateTo('admin')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0 whitespace-nowrap">Settings</button>
         </div>
       </div>
     </header>
