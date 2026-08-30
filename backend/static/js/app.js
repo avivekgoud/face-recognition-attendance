@@ -60,18 +60,16 @@ window.navigateTo = async function(viewName, params = {}) {
         if (typeof window.renderAdminView === "function") {
           await window.renderAdminView(container);
         } else {
-          // Dynamic on-demand script injection fallback
-          await new Promise((resolve) => {
-            const s = document.createElement("script");
-            s.src = `/static/js/views/admin.js?t=${Date.now()}`;
-            s.onload = resolve;
-            s.onerror = resolve;
-            document.head.appendChild(s);
-          });
+          let attempts = 0;
+          while (typeof window.renderAdminView !== "function" && attempts < 15) {
+            await new Promise(r => setTimeout(r, 100));
+            attempts++;
+          }
           if (typeof window.renderAdminView === "function") {
             await window.renderAdminView(container);
           } else {
-            throw new Error("Settings module loading timed out. Please refresh the page.");
+            console.warn("renderAdminView not found, falling back to dashboard");
+            await window.renderDashboardView(container);
           }
         }
         break;
