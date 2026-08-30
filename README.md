@@ -1,128 +1,136 @@
-<div align="center">
+# FaceSync: Facial Recognition Attendance Management System
 
-# 👤 FaceSync — Face Recognition Attendance Management System
-
-**An AI-Powered Facial Biometric Attendance Management System with Anti-Spoofing & AES-256 Biometric Encryption**
-
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![OpenCV](https://img.shields.io/badge/Computer%20Vision-OpenCV-5C3EE8.svg?logo=opencv&logoColor=white)](https://opencv.org)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)]()
-
-<br/>
-
-### 🎓 Academic Project Portfolio
-
-| Attribute | Details |
-| :--- | :--- |
-| **Developer / Author** | **A VIVEK GOUD** |
-| **Department / Branch** | **Computer Science and Engineering** |
-| **Institution / College** | **Vardhaman College of Engineering** |
-| **Academic Year** | **2026** |
-
-</div>
+An automated biometric attendance management system engineered for educational institutions, corporate workplaces, and examination halls, utilizing computer vision deep feature extraction, passive anti-spoofing verification, and AES-256 encrypted biometric storage.
 
 ---
 
-## 📌 Project Overview
+## Academic Project Credentials
 
-**FaceSync** is an enterprise-grade, privacy-compliant facial biometric attendance management system engineered for educational institutions, engineering colleges, universities, and enterprise workplaces.
-
-Developed at **Vardhaman College of Engineering** by **A Vivek Goud (Computer Science and Engineering)**, the system leverages computer vision deep texture/gradient feature extraction and cosine similarity ensemble matching to deliver sub-second (<100ms) automatic attendance check-ins through a live camera kiosk, backed by passive anti-spoofing filters, automated shift/grace-period rules, and AES-256 encrypted biometric storage.
-
----
-
-## ✨ Key Features
-
-### 1. 🎯 Multi-Angle Face Registration & Enrollment Wizard
-- **4-Angle Guided Capture:** Collects 4 facial variations (Frontal, Slight Left 15°, Slight Right 15°, Natural Expression / Smile) to generate an ensemble embedding vector per individual.
-- **Real-Time Quality Validation:** Live feedback evaluating blur (Laplacian variance), contrast, and face bounding dimensions.
-- **Biometric Privacy Consent:** Enforces and logs explicit user consent before biometric persistence.
-- **Photo Upload Alternative:** Supports direct image uploads for batch or remote registration.
-
-### 2. 📹 Live Attendance Kiosk & Real-Time Face Recognition
-- **Real-Time HUD Canvas:** Live camera stream with dynamic color-coded bounding boxes:
-  - 🟢 **Green:** Recognized attendee with name, department, status, and match confidence.
-  - ⚪ **Gray:** Unknown / unregistered face (*never added to database*).
-  - 🔴 **Red:** Anti-spoofing warning or quality alert.
-- **Anti-Spoofing & Liveness Verification:** Passive texture frequency and YCrCb chromatic distribution analysis to reject printed photo and phone-screen replay spoof attacks.
-- **Duplicate Check-in Prevention:** Configurable cooldown period (default: 15 minutes) to avoid redundant duplicate check-ins.
-- **Smart Pause & Audio Feedback:** Pauses for 3.5 seconds with confirmation chime upon verified check-in.
-- **Live Stream Ticker:** Displays real-time side ticker of the latest attendees.
-
-### 3. ⏱️ Smart Attendance Rules Engine & Shift Calculation
-- **Department-Specific Shifts:** Configurable shift start times, late grace periods (e.g. 15 mins), and shift end times.
-- **Automatic Status Calculation:**
-  - **Present (Green):** Checked in on or before `Shift Start + Grace Period` (e.g. 09:15 AM).
-  - **Late (Yellow):** Checked in after grace cutoff.
-  - **Absent (Red):** Unrecorded active personnel.
-  - **Check-Out (Blue):** Automatic departure recording for second scans after cooldown.
-
-### 4. 📈 Interactive Analytics Dashboard
-- **KPI Metric Counters:** Total Registered, Present Today, Late Today, Absent Today, Turnout Rate %.
-- **Chart.js Visualizations:**
-  - 7/14/30-Day Attendance Trends (Stacked bar chart for Present, Late, Absent).
-  - Department Turnout Breakdown (Doughnut chart with percentage legend).
-  - Hourly Arrival Peak Distribution (Area curve).
-  - Real-time live activity stream.
-
-### 5. 🔍 Search & Individual Person Profiles
-- **Global Search:** Instant fuzzy search by Name, Student/Employee ID, or Department.
-- **Individual Profile Drawer:**
-  - Monthly attendance heat calendar.
-  - Summary KPI statistics (Total logs, on-time count, late count, attendance rate %).
-  - Recent check-in / check-out timeline.
-  - **Right-to-be-Forgotten Biometric Erasure:** Permanently purges encrypted face embedding vectors and enrollment photos on demand.
-
-### 6. 📊 Multi-Format Report Generator
-- **Excel (.xlsx):** Formatted spreadsheets with KPI summary headers, status badges, and auto-adjusted columns using `openpyxl`.
-- **PDF Export:** Landscape PDF documents generated via `ReportLab` featuring organization branding, date range filters, summary statistics table, and detailed records table.
-- **CSV Export:** UTF-8 BOM formatted tabular data for integration into legacy college management or ERP systems.
-
-### 7. 🔐 Security, RBAC & Audit Trail
-- **AES-256 Biometric Vector Encryption:** All facial feature vectors are encrypted at rest using `cryptography.fernet`.
-- **Role-Based Access Control (RBAC):** Super Admin, Attendance Officer, Viewer accounts with PBKDF2-HMAC-SHA256 password security and JWT authentication.
-- **Audit Logs:** Immutable audit log tracking every administrative override, login, profile deletion, and biometric purge with timestamp, actor, and client IP.
+- **Author / Developer:** A Vivek Goud
+- **Department:** Department of Computer Science and Engineering
+- **Institution:** Vardhaman College of Engineering
+- **Academic Year:** 2026
 
 ---
 
-## 🛠️ System Architecture
+## Project Overview
+
+Traditional attendance logging methods, including manual roll calls, paper sign-in sheets, and RFID badge swiping, are susceptible to human error, proxy attendance, and administrative overhead. FaceSync solves these challenges by providing an automated, vision-based attendance pipeline that identifies registered individuals and records their check-in in under 100 milliseconds.
+
+The system is designed with a privacy-first architecture, ensuring that raw facial embeddings are never stored in plaintext. Instead, all 128-dimensional facial feature vectors are encrypted using AES-256 Fernet symmetric encryption at rest and decrypted only in volatile memory during similarity evaluation.
+
+---
+
+## Key System Capabilities
+
+### 1. Multi-Angle Guided Enrollment
+- Captures four distinct facial angles during registration: Frontal, Left 15 degrees, Right 15 degrees, and natural expression.
+- Calculates an ensemble biometric representation per individual to maintain high accuracy under varying ambient lighting and head orientations.
+- Performs real-time image quality assessment, evaluating Laplacian variance for motion blur, brightness thresholds, and facial bounding box dimensions before storing data.
+- Enforces and logs explicit biometric consent timestamps in compliance with data protection standards.
+
+### 2. Live Camera Recognition Kiosk
+- High-throughput webcam feed with dynamic canvas overlays indicating recognition status.
+- Color-coded feedback: Green for recognized attendees, Gray for unregistered faces, and Red for anti-spoofing warnings.
+- Sub-second recognition latency (~60 to 120 ms end-to-end), capable of processing 40 to 60 attendees per minute.
+- Intelligent scan pause: Pauses frame capture for 3.5 seconds upon verified check-in to provide confirmation before resuming.
+- Integrated Web Audio feedback chime.
+- Real-time side ticker listing recent check-in events.
+
+### 3. Passive Anti-Spoofing and Liveness Detection
+- Texture frequency analysis using Laplacian spatial gradients to detect printed photographs and paper cutouts.
+- Chromatic distribution analysis in YCrCb color space to identify specular glare and display pixel grids from smartphone or tablet replay attacks.
+- Rejects spoof attempts without requiring unnatural user actions like forced blinking.
+
+### 4. Smart Attendance Rules Engine
+- Dynamic department-level shift scheduling: Configurable standard start time, late grace period (e.g., 15 minutes), and standard shift end time.
+- Automated status classification:
+  - **Present:** Check-in completed within shift start plus grace period.
+  - **Late:** Check-in completed after grace period cutoff.
+  - **Absent:** Active registered personnel with no check-in recorded for the day.
+  - **Check-Out:** Automatically logs departure timestamps for secondary scans later in the day.
+- Duplicate suppression cooldown: Configurable time window (default 15 minutes) preventing multiple logs when standing near the camera.
+
+### 5. Analytics Dashboard and Reporting
+- Key performance indicators: Total registered personnel, present today, late today, absent count, and turnout rate.
+- Multi-day attendance trend visualization with stacked status breakdowns.
+- Department-wise attendance distribution charts.
+- Hourly check-in arrival curve.
+- Multi-format report export:
+  - Microsoft Excel (.xlsx) workbooks with KPI summaries and formatted status badges.
+  - Formatted PDF documents with organizational headers and detailed records tables.
+  - Standard UTF-8 CSV exports for integration with external ERP systems.
+
+### 6. Individual Profiles and Right-to-be-Forgotten
+- Global instant search across personnel by name, ID number, or department.
+- Comprehensive profile drawer displaying personal details, monthly attendance calendar, attendance statistics, and recent activity logs.
+- One-click biometric erasure: Permanently purges encrypted face vectors and enrollment thumbnails while preserving historical attendance logs.
+
+### 7. Security and Access Control
+- AES-256 encrypted biometric vectors.
+- Role-Based Access Control (Super Admin, Attendance Officer, Viewer).
+- PBKDF2-HMAC-SHA256 password hashing with random salt.
+- JWT (JSON Web Token) authentication.
+- Comprehensive audit trail recording all administrative actions, overrides, and biometric deletions with actor ID, timestamp, and client IP.
+
+---
+
+## System Architecture
 
 ```
 face_attendance_system/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py                # FastAPI entry point, CORS, static mounts
-│   │   ├── config.py              # Application settings, paths, security keys
-│   │   ├── database.py            # SQLAlchemy database engine and session
-│   │   ├── models/                # User, Person, BiometricFace, AttendanceRecord, etc.
-│   │   ├── schemas/               # Pydantic request/response schemas
-│   │   ├── services/              # Face Recognition, Liveness, Encryption, Attendance, Reports, Auth
-│   │   └── routers/               # API endpoints (/auth, /persons, /attendance, /dashboard, /reports, /settings)
-│   ├── static/                    # Modern responsive Single Page Application
-│   │   ├── index.html             # Shell with Tailwind CSS & Chart.js
-│   │   ├── css/styles.css         # Glassmorphism, animations, HUD scanline
-│   │   └── js/                    # API client, views (Dashboard, Kiosk, Registration, People, History, Reports, Admin)
+│   │   ├── main.py                # FastAPI application entry point and middleware
+│   │   ├── config.py              # Configuration settings and security parameters
+│   │   ├── database.py            # Database engine and session management
+│   │   ├── models/                # SQLAlchemy models (User, Person, Biometric, Attendance)
+│   │   ├── schemas/               # Pydantic request and response schemas
+│   │   ├── services/              # Core business logic (Face matching, Liveness, Crypto, Reports)
+│   │   └── routers/               # API endpoints (Auth, Persons, Attendance, Dashboard, Reports, Settings)
+│   ├── static/                    # Responsive Single-Page Application (SPA)
+│   │   ├── index.html             # Main HTML5 shell
+│   │   ├── css/styles.css         # Styling, glassmorphism, and camera HUD
+│   │   └── js/                    # Client router, views, and API communication
 │   └── data/
-│       ├── attendance.db          # SQLite database
-│       └── uploads/               # Profile photo avatars & check-in snapshots
+│       ├── attendance.db          # SQLite database storage
+│       └── uploads/               # Profile photo avatars and verification snapshots
 ├── tests/
-│   ├── test_system.py             # Unit & integration tests for all core services
+│   ├── test_system.py             # Integration test suite for core services
 │   └── test_api_endpoints.py      # HTTP endpoint verification tests
-├── .github/workflows/ci.yml       # GitHub Actions CI workflow
-├── requirements.txt               # Dependencies
-├── Dockerfile                     # Production container image
+├── .github/workflows/ci.yml       # GitHub Actions automated continuous integration workflow
+├── requirements.txt               # Python package dependencies
+├── Dockerfile                     # Container deployment specification
 ├── docker-compose.yml             # Container orchestration
-├── render.yaml                    # Render.com 1-click cloud deployment blueprint
-├── start_service.bat              # Windows 1-click launcher
-├── push_to_github.bat             # 1-click GitHub push script
+├── render.yaml                    # Cloud deployment blueprint
+├── start_service.bat              # Windows launcher script
+├── push_to_github.bat             # Git repository management utility
 └── README.md
 ```
 
 ---
 
-## 🚀 Quick Start Guide
+## Technology Stack
+
+- **Backend Framework:** FastAPI (Python 3.11+)
+- **Server Gateway:** Uvicorn ASGI
+- **Database & ORM:** SQLite / SQLAlchemy
+- **Computer Vision:** OpenCV (opencv-python-headless)
+- **Mathematical Processing:** NumPy
+- **Data Analysis & Formatting:** Pandas, OpenPyXL, ReportLab
+- **Frontend:** Modern HTML5, JavaScript (ES6+), Tailwind CSS, Chart.js
+- **Cryptography:** Cryptography (Fernet AES-256), Hashlib (PBKDF2-SHA256)
+- **Containerization:** Docker & Docker Compose
+- **Continuous Integration:** GitHub Actions
+
+---
+
+## Installation and Setup
+
+### Prerequisites
+- Python 3.11 or higher
+- Git
+- Modern web browser (Chrome, Edge, Firefox) with camera access
 
 ### 1. Clone the Repository
 ```bash
@@ -130,46 +138,75 @@ git clone https://github.com/avivekgoud/face-recognition-attendance.git
 cd face-recognition-attendance
 ```
 
-### 2. Install Dependencies
+### 2. Create and Activate a Virtual Environment (Optional)
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
+```
+
+### 3. Install Required Packages
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the Application
+### 4. Run the Application
 ```bash
 python run.py
 ```
-*(On Windows, you can also double-click `start_service.bat`)*
+*(On Windows systems, you can also double-click `start_service.bat`)*
 
-### 4. Open in Browser
-- **Live Dashboard:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- **Interactive API Documentation:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+### 5. Access the System
+- Web Application Dashboard: `http://127.0.0.1:8000`
+- Interactive OpenAPI Documentation: `http://127.0.0.1:8000/docs`
 
-#### Default Administrator Credentials:
+Default Administrator Credentials:
 - **Username:** `admin`
 - **Password:** `admin123`
 
 ---
 
-## 🧪 Running Automated Tests
+## Automated Verification and Tests
+
+To run the automated integration test suites:
 
 ```bash
+# Core biometric, encryption, and attendance engine tests
 python tests/test_system.py
+
+# API route and endpoint integration tests
 python tests/test_api_endpoints.py
 ```
 
 ---
 
-## 👨‍💻 Author & Academic Information
+## Deployment Options
 
-- **Student Name:** **A VIVEK GOUD**
-- **Branch / Major:** **Computer Science and Engineering**
-- **College:** **Vardhaman College of Engineering**
-- **Project Title:** Face Recognition Attendance Management System (FaceSync)
+### Docker Deployment
+```bash
+docker compose up -d --build
+```
+
+### Cloud Deployment (Render.com / Linux VPS)
+The repository includes `render.yaml` for one-click deployment:
+1. Connect the repository to Render.com.
+2. Set Build Command to `pip install -r requirements.txt`.
+3. Set Start Command to `python run.py`.
+
+---
+
+## Author and Institution Details
+
+- **Student Name:** A Vivek Goud
+- **Degree / Major:** Bachelor of Technology in Computer Science and Engineering
+- **College:** Vardhaman College of Engineering, Hyderabad
+- **Project Title:** FaceSync - Face Recognition Attendance Management System
 - **Year:** 2026
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the [MIT License](LICENSE) - Copyright &copy; 2026 **A VIVEK GOUD (Vardhaman College of Engineering)**.
+This software is distributed under the terms of the MIT License. Refer to the [LICENSE](LICENSE) file for complete details.
