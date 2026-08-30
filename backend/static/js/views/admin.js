@@ -5,10 +5,15 @@ window.renderAdminView = async function(container) {
   if (!container) return;
 
   const user = typeof api !== 'undefined' ? api.getUser() : null;
+  const currentLang = localStorage.getItem("facesync_lang") || "en";
+  const currentTimezone = localStorage.getItem("facesync_tz") || "Asia/Kolkata";
+  const currentDateFormat = localStorage.getItem("facesync_date_fmt") || "DD/MM/YYYY";
+  const currentTheme = localStorage.getItem("facesync_theme") || "dark";
 
   container.innerHTML = `
     <div class="space-y-6">
-      <!-- Admin Header -->
+      
+      <!-- Admin Header Banner -->
       <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div class="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">
@@ -16,11 +21,15 @@ window.renderAdminView = async function(container) {
             <span>Administration & System Controls</span>
           </div>
           <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">System Configuration & Security</h2>
-          <p class="text-xs text-slate-500 mt-1">Configure facial recognition thresholds, shift schedules, department policies, user accounts, and security audit trails.</p>
+          <p class="text-xs text-slate-500 mt-1">Manage institutional policies, facial biometrics AI, department shifts, administrator accounts, localization, and audit logs.</p>
         </div>
 
         <div class="flex items-center gap-2 flex-wrap">
-          <button onclick="window.seedSystemDemoData()" class="flex items-center gap-2 px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-xl border border-indigo-200 dark:border-indigo-800 shadow-sm transition-all">
+          <button onclick="window.downloadDatabaseBackup()" class="flex items-center gap-2 px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-semibold rounded-xl border border-emerald-200 dark:border-emerald-800 shadow-sm transition-all">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download DB Backup
+          </button>
+          <button onclick="window.seedSystemDemoData()" class="flex items-center gap-2 px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded-xl border border-indigo-200 dark:border-indigo-800 shadow-sm transition-all">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             Seed Realistic Demo Data
           </button>
@@ -28,22 +37,28 @@ window.renderAdminView = async function(container) {
       </div>
 
       <!-- Navigation Tabs -->
-      <div class="flex border-b border-slate-200 dark:border-slate-700 gap-2 sm:gap-6 text-xs sm:text-sm font-semibold overflow-x-auto pb-1">
+      <div class="flex border-b border-slate-200 dark:border-slate-700 gap-2 sm:gap-6 text-xs sm:text-sm font-semibold overflow-x-auto pb-1 no-scrollbar">
         <button onclick="window.switchAdminTab('settings')" id="tab-btn-settings" class="pb-3 border-b-2 border-blue-600 text-blue-600 font-bold shrink-0">
-          Attendance & Recognition Settings
+          General & Biometrics
+        </button>
+        <button onclick="window.switchAdminTab('localization')" id="tab-btn-localization" class="pb-3 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 shrink-0">
+          Language & Appearance
+        </button>
+        <button onclick="window.switchAdminTab('account')" id="tab-btn-account" class="pb-3 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 shrink-0">
+          Admin Sign In & Session
         </button>
         <button onclick="window.switchAdminTab('departments')" id="tab-btn-departments" class="pb-3 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 shrink-0">
           Departments & Shifts
         </button>
         <button onclick="window.switchAdminTab('users')" id="tab-btn-users" class="pb-3 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 shrink-0">
-          User & Officer Accounts
+          User Accounts
         </button>
         <button onclick="window.switchAdminTab('audit')" id="tab-btn-audit" class="pb-3 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 shrink-0">
-          Security & Audit Logs
+          Audit Trail
         </button>
       </div>
 
-      <!-- Tab 1: System Settings -->
+      <!-- Tab 1: System Settings & Biometrics -->
       <div id="tab-content-settings" class="space-y-6">
         <form id="settings-form" onsubmit="window.saveSettings(event)" class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -51,8 +66,8 @@ window.renderAdminView = async function(container) {
             <!-- General Organization Info -->
             <div class="space-y-4">
               <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm pb-1 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-                <span>Organization & General Policy</span>
-                <span class="text-[10px] text-blue-600 uppercase font-mono">Policy v2.0</span>
+                <span>Organization & Shift Policy</span>
+                <span class="text-[10px] text-blue-600 uppercase font-mono">Shift Rules</span>
               </h3>
               
               <div>
@@ -81,7 +96,7 @@ window.renderAdminView = async function(container) {
             <div class="space-y-4">
               <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm pb-1 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
                 <span>Facial Biometrics & Anti-Spoofing</span>
-                <span class="text-[10px] text-emerald-600 uppercase font-mono font-bold">AES-256 Protected</span>
+                <span class="text-[10px] text-emerald-600 uppercase font-mono font-bold">AES-256 Encrypted</span>
               </h3>
 
               <div>
@@ -90,13 +105,13 @@ window.renderAdminView = async function(container) {
                   <span id="label-sim-val" class="font-mono font-bold text-blue-600">68%</span>
                 </div>
                 <input type="range" id="set-sim-threshold" min="0.50" max="0.95" step="0.01" value="0.68" oninput="document.getElementById('label-sim-val').innerText = `${Math.round(this.value * 100)}%`" class="w-full">
-                <p class="text-[11px] text-slate-400 mt-1">Recommended threshold: 65%–72%. Higher threshold increases strictness against lookalikes.</p>
+                <p class="text-[11px] text-slate-400 mt-1">Recommended threshold: 65%–72%. Higher threshold prevents false positives.</p>
               </div>
 
               <div>
                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Duplicate Check-in Cooldown (Minutes)</label>
                 <input type="number" id="set-cooldown-mins" min="1" max="120" value="15" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-blue-500">
-                <p class="text-[11px] text-slate-400 mt-1">Prevents repeated duplicate logs when standing in front of the kiosk.</p>
+                <p class="text-[11px] text-slate-400 mt-1">Prevents repeated duplicate logs when standing near the camera.</p>
               </div>
 
               <div class="pt-2">
@@ -117,10 +132,131 @@ window.renderAdminView = async function(container) {
         </form>
       </div>
 
-      <!-- Tab 2: Departments -->
+      <!-- Tab 2: Language & Appearance -->
+      <div id="tab-content-localization" class="hidden space-y-6">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-6">
+          <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm pb-1 border-b border-slate-100 dark:border-slate-700">
+            Language, Localization & Theme Customization
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Language Selection -->
+            <div class="space-y-3">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Select Interface Language</label>
+              <select id="pref-language" onchange="window.saveLanguagePref(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-blue-500 font-medium">
+                <option value="en" ${currentLang === 'en' ? 'selected' : ''}>🇺🇸 English (Default)</option>
+                <option value="hi" ${currentLang === 'hi' ? 'selected' : ''}>🇮🇳 हिन्दी (Hindi)</option>
+                <option value="te" ${currentLang === 'te' ? 'selected' : ''}>🇮🇳 తెలుగు (Telugu)</option>
+                <option value="es" ${currentLang === 'es' ? 'selected' : ''}>🇪🇸 Español (Spanish)</option>
+                <option value="fr" ${currentLang === 'fr' ? 'selected' : ''}>🇫🇷 Français (French)</option>
+                <option value="de" ${currentLang === 'de' ? 'selected' : ''}>🇩🇪 Deutsch (German)</option>
+              </select>
+              <p class="text-[11px] text-slate-400">Controls dashboard labels, table headers, and status badges.</p>
+            </div>
+
+            <!-- Date Format -->
+            <div class="space-y-3">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Date Display Format</label>
+              <select id="pref-date-format" onchange="window.saveDateFormatPref(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-blue-500 font-mono">
+                <option value="DD/MM/YYYY" ${currentDateFormat === 'DD/MM/YYYY' ? 'selected' : ''}>DD/MM/YYYY (e.g. 31/08/2026)</option>
+                <option value="YYYY-MM-DD" ${currentDateFormat === 'YYYY-MM-DD' ? 'selected' : ''}>YYYY-MM-DD (e.g. 2026-08-31)</option>
+                <option value="MM/DD/YYYY" ${currentDateFormat === 'MM/DD/YYYY' ? 'selected' : ''}>MM/DD/YYYY (e.g. 08/31/2026)</option>
+              </select>
+            </div>
+
+            <!-- Timezone Preference -->
+            <div class="space-y-3">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Timezone Preference</label>
+              <select id="pref-timezone" onchange="window.saveTimezonePref(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-blue-500 font-mono">
+                <option value="Asia/Kolkata" ${currentTimezone === 'Asia/Kolkata' ? 'selected' : ''}>Asia/Kolkata (IST +05:30)</option>
+                <option value="UTC" ${currentTimezone === 'UTC' ? 'selected' : ''}>UTC (GMT +00:00)</option>
+                <option value="America/New_York" ${currentTimezone === 'America/New_York' ? 'selected' : ''}>America/New_York (EST -05:00)</option>
+                <option value="Europe/London" ${currentTimezone === 'Europe/London' ? 'selected' : ''}>Europe/London (BST +01:00)</option>
+                <option value="Asia/Dubai" ${currentTimezone === 'Asia/Dubai' ? 'selected' : ''}>Asia/Dubai (GST +04:00)</option>
+                <option value="Asia/Singapore" ${currentTimezone === 'Asia/Singapore' ? 'selected' : ''}>Asia/Singapore (SGT +08:00)</option>
+              </select>
+            </div>
+
+            <!-- Theme Mode -->
+            <div class="space-y-3">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Interface Theme</label>
+              <div class="grid grid-cols-2 gap-3">
+                <button type="button" onclick="window.setThemeMode('dark')" class="p-3 rounded-2xl border ${currentTheme === 'dark' ? 'border-blue-600 bg-blue-50/10 text-blue-500' : 'border-slate-200 dark:border-slate-700'} text-xs font-bold flex items-center justify-center gap-2">
+                  <span>🌙 Dark Mode</span>
+                </button>
+                <button type="button" onclick="window.setThemeMode('light')" class="p-3 rounded-2xl border ${currentTheme === 'light' ? 'border-blue-600 bg-blue-50/10 text-blue-500' : 'border-slate-200 dark:border-slate-700'} text-xs font-bold flex items-center justify-center gap-2">
+                  <span>☀️ Light Mode</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Admin Sign In & Session -->
+      <div id="tab-content-account" class="hidden space-y-6">
+        <div class="max-w-xl mx-auto bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-6">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-slate-100 text-base">Administrator Sign In & Session</h3>
+              <p class="text-xs text-slate-500">Authenticate to modify attendance records or manage administrative roles.</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${user ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}">
+              ${user ? 'Authenticated' : 'Not Signed In'}
+            </span>
+          </div>
+
+          ${user ? `
+            <div class="space-y-4">
+              <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/25">
+                    ${user.username.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm">${user.full_name || user.username}</h4>
+                    <p class="text-xs text-slate-400">@${user.username} &bull; <span class="text-blue-500 font-semibold uppercase">${user.role}</span></p>
+                  </div>
+                </div>
+                <button onclick="window.handleLogout()" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 text-xs font-bold rounded-xl border border-rose-200 dark:border-rose-800 transition-all">
+                  Sign Out
+                </button>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                <div class="font-bold text-blue-700 dark:text-blue-300">Active Permissions:</div>
+                <p>&bull; Full attendance records modification & manual check-in override</p>
+                <p>&bull; Right-to-be-forgotten biometric erasure</p>
+                <p>&bull; Department shifts & user account creation</p>
+              </div>
+            </div>
+          ` : `
+            <form id="settings-inline-login" onsubmit="window.handleSettingsLogin(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Username</label>
+                <input type="text" id="set-login-username" value="avivek" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-blue-500">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Password</label>
+                <input type="password" id="set-login-password" value="avivek1259" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-xs focus:ring-2 focus:ring-blue-500">
+                <p class="text-[11px] text-slate-400 mt-1">Credentials: <code class="font-mono text-blue-600">avivek / avivek1259</code></p>
+              </div>
+
+              <button type="submit" id="btn-settings-login" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all">
+                Sign In as Administrator
+              </button>
+            </form>
+          `}
+        </div>
+      </div>
+
+      <!-- Tab 4: Departments -->
       <div id="tab-content-departments" class="hidden space-y-6">
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between flex-wrap gap-2">
             <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Department & Shift Schedule Management</h3>
             <button onclick="window.openDeptModal()" class="px-3.5 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl hover:bg-blue-700 shadow-md transition-all">
               + Add Department
@@ -148,10 +284,10 @@ window.renderAdminView = async function(container) {
         </div>
       </div>
 
-      <!-- Tab 3: Users -->
+      <!-- Tab 5: Users -->
       <div id="tab-content-users" class="hidden space-y-6">
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between flex-wrap gap-2">
             <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Administrative Users & Attendance Officers</h3>
             <button onclick="window.openUserModal()" class="px-3.5 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl hover:bg-blue-700 shadow-md transition-all">
               + Create User Account
@@ -178,7 +314,7 @@ window.renderAdminView = async function(container) {
         </div>
       </div>
 
-      <!-- Tab 4: Audit Logs -->
+      <!-- Tab 6: Audit Logs -->
       <div id="tab-content-audit" class="hidden space-y-6">
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-4">
           <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Security & Compliance Audit Trail</h3>
@@ -286,7 +422,7 @@ window.renderAdminView = async function(container) {
 };
 
 window.switchAdminTab = async function(tab) {
-  ["settings", "departments", "users", "audit"].forEach(t => {
+  ["settings", "localization", "account", "departments", "users", "audit"].forEach(t => {
     const btn = document.getElementById(`tab-btn-${t}`);
     const content = document.getElementById(`tab-content-${t}`);
     if (btn && content) {
@@ -345,6 +481,66 @@ window.saveSettings = async function(e) {
     showToast("System configuration updated successfully", "success");
   } catch (err) {
     showToast(err.message || "Failed to update settings", "error");
+  }
+};
+
+window.saveLanguagePref = function(lang) {
+  localStorage.setItem("facesync_lang", lang);
+  showToast(`Language preference set to '${lang.toUpperCase()}'.`, "success");
+};
+
+window.saveDateFormatPref = function(fmt) {
+  localStorage.setItem("facesync_date_fmt", fmt);
+  showToast(`Date display format updated to ${fmt}.`, "info");
+};
+
+window.saveTimezonePref = function(tz) {
+  localStorage.setItem("facesync_tz", tz);
+  showToast(`Timezone preference set to ${tz}.`, "info");
+};
+
+window.setThemeMode = function(mode) {
+  if (mode === "dark") {
+    document.documentElement.classList.add("dark");
+    localStorage.setItem("facesync_theme", "dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+    localStorage.setItem("facesync_theme", "light");
+  }
+  showToast(`Switched to ${mode} mode`, "info");
+  window.renderAdminView();
+  window.switchAdminTab("localization");
+};
+
+window.downloadDatabaseBackup = function() {
+  showToast("Preparing database backup download...", "info", 2000);
+  window.location.href = "/api/settings/backup-database";
+};
+
+window.handleSettingsLogin = async function(e) {
+  e.preventDefault();
+  const u = document.getElementById("set-login-username").value.trim();
+  const p = document.getElementById("set-login-password").value;
+  const btn = document.getElementById("btn-settings-login");
+
+  if (btn) btn.innerText = "Authenticating...";
+
+  try {
+    const res = await api.login(u, p);
+    api.setSession(res.access_token, {
+      username: res.username,
+      full_name: res.full_name,
+      role: res.role
+    });
+
+    if (typeof soundEffects !== 'undefined') soundEffects.playSuccess();
+    showToast(`Signed in successfully as ${res.full_name}!`, "success");
+    window.updateAuthUI();
+    await window.renderAdminView();
+    await window.switchAdminTab("account");
+  } catch (err) {
+    showToast(err.message || "Invalid credentials", "error");
+    if (btn) btn.innerText = "Sign In as Administrator";
   }
 };
 

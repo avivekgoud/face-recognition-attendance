@@ -3,6 +3,7 @@ from datetime import datetime, date, timedelta
 import random
 from typing import Dict, Any, Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from ..config import settings
 from ..database import get_db
@@ -228,3 +229,16 @@ def seed_sample_data(db: Session = Depends(get_db)):
         "success": True,
         "message": f"Seeded sample data: {len(dept_map)} departments, {len(person_objects)} people, and {created_records_count} attendance records."
     }
+
+@router.get("/backup-database")
+def download_database_backup(current_user: Optional[User] = Depends(get_current_user_optional)):
+    """Downloads full SQLite database backup file."""
+    db_path = settings.DATA_DIR / "attendance.db"
+    if not db_path.exists():
+        raise HTTPException(status_code=404, detail="Database file not found")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return FileResponse(
+        path=str(db_path),
+        filename=f"facesync_backup_{timestamp}.db",
+        media_type="application/x-sqlite3"
+    )
