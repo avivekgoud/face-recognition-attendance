@@ -74,7 +74,7 @@ window.handleAdminLogin = async function(e) {
 
     // Reload active view if admin
     if (window.currentView === "admin") {
-      window.renderAdminView(document.getElementById("app-view-container"));
+      window.navigateTo("admin");
     }
   } catch (err) {
     showToast(err.message || "Invalid credentials", "error");

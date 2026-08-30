@@ -226,46 +226,6 @@ window.renderAdminView = async function(container) {
         </form>
       </div>
     </div>
-
-    <!-- Create User Modal -->
-    <div id="user-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center hidden p-4">
-      <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200 dark:border-slate-700">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
-          <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Create Administrative Account</h3>
-          <button onclick="window.closeUserModal()" class="text-slate-400">&times;</button>
-        </div>
-        <form id="create-user-form" onsubmit="window.saveUser(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-semibold mb-1">Username *</label>
-            <input type="text" id="new-user-username" required placeholder="e.g. officer1" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-700 border text-xs">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold mb-1">Full Name *</label>
-            <input type="text" id="new-user-fullname" required placeholder="e.g. Rahul Sharma" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-700 border text-xs">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold mb-1">Email Address *</label>
-            <input type="email" id="new-user-email" required placeholder="e.g. rahul@vardhaman.org" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-700 border text-xs">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold mb-1">Password *</label>
-            <input type="password" id="new-user-password" required placeholder="••••••••" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-700 border text-xs">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold mb-1">Role *</label>
-            <select id="new-user-role" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-700 border text-xs">
-              <option value="ATTENDANCE_OFFICER">Attendance Officer</option>
-              <option value="SUPER_ADMIN">Super Admin</option>
-              <option value="VIEWER">Viewer (Read-Only)</option>
-            </select>
-          </div>
-          <div class="flex justify-end gap-2 pt-2">
-            <button type="button" onclick="window.closeUserModal()" class="px-4 py-2 bg-slate-100 text-xs font-semibold rounded-xl">Cancel</button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-xl">Create Account</button>
-          </div>
-        </form>
-      </div>
-    </div>
   `;
 
   await loadAdminSettings();
@@ -450,31 +410,5 @@ window.deleteDept = async function(id) {
     await loadDepartmentsTable();
   } catch (e) {
     showToast(e.message || "Failed to delete", "error");
-  }
-};
-
-window.openUserModal = function() {
-  document.getElementById("user-modal")?.classList.remove("hidden");
-};
-window.closeUserModal = function() {
-  document.getElementById("user-modal")?.classList.add("hidden");
-};
-
-window.saveUser = async function(e) {
-  e.preventDefault();
-  const username = document.getElementById("new-user-username").value.trim();
-  const full_name = document.getElementById("new-user-fullname").value.trim();
-  const email = document.getElementById("new-user-email").value.trim();
-  const password = document.getElementById("new-user-password").value;
-  const role = document.getElementById("new-user-role").value;
-
-  try {
-    await api.createUser({ username, full_name, email, password, role });
-    soundEffects.playSuccess();
-    showToast(`Created user account '${username}'`, "success");
-    window.closeUserModal();
-    await loadUsersTable();
-  } catch (err) {
-    showToast(err.message || "Failed to create user", "error");
   }
 };

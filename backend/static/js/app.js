@@ -36,50 +36,46 @@ window.navigateTo = async function(viewName, params = {}) {
   `;
 
   try {
-    async function ensureViewLoaded(fnName, scriptPath) {
-      if (typeof window[fnName] !== "function") {
-        await new Promise((resolve) => {
-          const s = document.createElement("script");
-          s.src = scriptPath + "?v=" + Date.now();
-          s.onload = resolve;
-          s.onerror = resolve;
-          document.head.appendChild(s);
-        });
-      }
-    }
-
     switch (viewName) {
       case "dashboard":
-        await ensureViewLoaded("renderDashboardView", "/static/js/views/dashboard.js");
         await window.renderDashboardView(container);
         break;
       case "live":
-        await ensureViewLoaded("renderLiveCameraView", "/static/js/views/live_camera.js");
         await window.renderLiveCameraView(container);
         break;
       case "registration":
-        await ensureViewLoaded("renderRegistrationView", "/static/js/views/registration.js");
         await window.renderRegistrationView(container);
         break;
       case "people":
-        await ensureViewLoaded("renderPeopleView", "/static/js/views/people.js");
         await window.renderPeopleView(container);
         break;
       case "history":
-        await ensureViewLoaded("renderHistoryView", "/static/js/views/history.js");
         await window.renderHistoryView(container);
         break;
       case "reports":
-        await ensureViewLoaded("renderReportsView", "/static/js/views/reports.js");
         await window.renderReportsView(container);
         break;
       case "admin":
       case "settings":
-        await ensureViewLoaded("renderAdminView", "/static/js/views/admin.js");
-        await window.renderAdminView(container);
+        if (typeof window.renderAdminView === "function") {
+          await window.renderAdminView(container);
+        } else {
+          // Dynamic on-demand script injection fallback
+          await new Promise((resolve) => {
+            const s = document.createElement("script");
+            s.src = `/static/js/views/admin.js?t=${Date.now()}`;
+            s.onload = resolve;
+            s.onerror = resolve;
+            document.head.appendChild(s);
+          });
+          if (typeof window.renderAdminView === "function") {
+            await window.renderAdminView(container);
+          } else {
+            throw new Error("Settings module loading timed out. Please refresh the page.");
+          }
+        }
         break;
       default:
-        await ensureViewLoaded("renderDashboardView", "/static/js/views/dashboard.js");
         await window.renderDashboardView(container);
     }
   } catch (err) {
