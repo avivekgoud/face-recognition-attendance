@@ -260,8 +260,20 @@ window.loadHistory = async function() {
         ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">Excused</span>`
         : `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300">Absent</span>`;
 
-      const checkInFormatted = r.check_in_time ? new Date(r.check_in_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--";
-      const checkOutFormatted = r.check_out_time ? new Date(r.check_out_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--";
+      function formatLocalTime(dtStr) {
+        if (!dtStr) return "--";
+        try {
+          const iso = dtStr.endsWith("Z") ? dtStr : (dtStr.includes("T") ? dtStr + "Z" : dtStr);
+          const d = new Date(iso);
+          if (!isNaN(d.getTime())) {
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+          }
+        } catch (e) {}
+        return dtStr;
+      }
+
+      const checkInFormatted = formatLocalTime(r.check_in_time);
+      const checkOutFormatted = formatLocalTime(r.check_out_time);
 
       return `
         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">

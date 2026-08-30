@@ -337,9 +337,13 @@ function drawBoundingBox(canvas, video, result) {
 
 function handleRecognitionSuccess(result) {
   const now = Date.now();
+  const localTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
   
-  // Throttle popup banners for same person within 3 seconds
-  if (lastRecognizedPersonId === result.person_id && (now - lastRecognizedTimestamp) < 3000) {
+  // Update result with user's browser local time
+  result.display_time = localTime;
+
+  // Throttle popup banners for same person within 3.5 seconds
+  if (lastRecognizedPersonId === result.person_id && (now - lastRecognizedTimestamp) < 3500) {
     return;
   }
 
@@ -351,11 +355,17 @@ function handleRecognitionSuccess(result) {
     sessionRecognizedCount++;
     const countEl = document.getElementById("session-checkin-count");
     if (countEl) countEl.innerText = `${sessionRecognizedCount} marked`;
+    
+    // Pause frame processing for 3 seconds to let user see success banner
+    isProcessingFrame = true;
+    setTimeout(() => {
+      isProcessingFrame = false;
+    }, 3000);
   }
 
   showFloatingBanner(result);
   appendTickerItem(result);
-  updateHudStatus(`Recognized: ${result.full_name} (${(result.confidence * 100).toFixed(1)}%)`);
+  updateHudStatus(`Verified: ${result.full_name} (${(result.confidence * 100).toFixed(1)}%) at ${localTime}`);
 }
 
 function showFloatingBanner(result) {
@@ -368,8 +378,10 @@ function showFloatingBanner(result) {
   const badgeEl = document.getElementById("banner-status-badge");
   const avatarWrap = document.getElementById("banner-avatar-wrap");
 
+  const timeStr = result.display_time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
   if (nameEl) nameEl.innerText = result.full_name;
-  if (deptEl) deptEl.innerText = `${result.department_name} • ${result.check_in_time || 'Just now'} • ${result.message}`;
+  if (deptEl) deptEl.innerText = `${result.department_name} • ${timeStr} • ${result.message}`;
   if (scoreEl) scoreEl.innerText = `${(result.confidence * 100).toFixed(1)}%`;
   
   if (badgeEl) {
@@ -403,6 +415,8 @@ function appendTickerItem(result) {
     ticker.innerHTML = "";
   }
 
+  const timeStr = result.display_time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
   const item = document.createElement("div");
   item.className = "flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 hover:border-blue-500/40 transition-all";
 
@@ -422,7 +436,7 @@ function appendTickerItem(result) {
     </div>
     <div class="text-right shrink-0">
       <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${statusColor}">${result.status || 'Verified'}</span>
-      <div class="text-[10px] font-mono text-slate-400 mt-0.5">${result.check_in_time || 'Now'}</div>
+      <div class="text-[10px] font-mono text-slate-400 mt-0.5">${timeStr}</div>
     </div>
   `;
 

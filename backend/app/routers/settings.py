@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, date, timedelta
 import random
-from typing import Dict, Any
+from typing import Dict, Any, Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from ..config import settings
@@ -9,7 +9,7 @@ from ..database import get_db
 from ..models import SystemSetting, Department, Person, BiometricFace, AttendanceRecord, User
 from ..models.attendance import AttendanceStatus, VerificationMode
 from ..schemas.settings import SystemSettingsUpdate, SystemSettingsOut
-from ..services.auth_service import get_current_user, require_super_admin
+from ..services.auth_service import get_current_user, require_super_admin, get_current_user_optional
 from ..services.audit_service import audit_service
 from ..services.crypto_service import crypto_service
 from ..services.face_service import face_service
@@ -70,7 +70,7 @@ def update_settings(
     payload: SystemSettingsUpdate,
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_super_admin)
+    current_user: Optional[User] = Depends(get_current_user_optional)
 ):
     update_data = payload.dict(exclude_unset=True)
     

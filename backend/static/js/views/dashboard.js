@@ -411,7 +411,17 @@ function renderRecentTable(items) {
           </div>
         </td>
         <td class="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs">${item.department_name}</td>
-        <td class="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs font-mono">${item.check_in_time}</td>
+        <td class="px-4 py-3 text-slate-600 dark:text-slate-300 text-xs font-mono">
+          ${(() => {
+            if (!item.check_in_time) return '--';
+            try {
+              const iso = item.check_in_time.endsWith('Z') ? item.check_in_time : (item.check_in_time.includes('T') ? item.check_in_time + 'Z' : item.check_in_time);
+              const d = new Date(iso);
+              if (!isNaN(d.getTime())) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            } catch(e) {}
+            return item.check_in_time;
+          })()}
+        </td>
         <td class="px-4 py-3">${statusBadge}</td>
         <td class="px-4 py-3 text-right text-xs font-mono font-semibold text-blue-600 dark:text-blue-400">
           ${item.confidence > 0 ? `${item.confidence}%` : '--'}
