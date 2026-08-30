@@ -99,7 +99,7 @@ with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/facial-recognition.png", width=65)
     st.title("FaceSync AI")
     st.caption("Biometric Attendance Management System")
-    st.markdown("**Author:** A Vivek Goud  \n**Dept:** Computer Science & Engineering")
+    st.markdown("**Author:** A VIVEK GOUD  \n**Dept:** Computer Science and Engineering  \n**College:** Vardhaman College of Engineering")
     st.divider()
 
     menu = st.radio(

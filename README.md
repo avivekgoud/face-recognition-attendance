@@ -2,7 +2,7 @@
 
 # 👤 FaceSync — Face Recognition Attendance Management System
 
-**An AI-Powered Biometric Attendance Management System with Anti-Spoofing & AES-256 Biometric Encryption**
+**An AI-Powered Facial Biometric Attendance Management System with Anti-Spoofing & AES-256 Biometric Encryption**
 
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![OpenCV](https://img.shields.io/badge/Computer%20Vision-OpenCV-5C3EE8.svg?logo=opencv&logoColor=white)](https://opencv.org)
@@ -12,8 +12,14 @@
 
 <br/>
 
-**Developed by:** **A Vivek Goud**  
-**Department:** **Computer Science & Engineering**
+### 🎓 Academic Project Portfolio
+
+| Attribute | Details |
+| :--- | :--- |
+| **Developer / Author** | **A VIVEK GOUD** |
+| **Department / Branch** | **Computer Science and Engineering** |
+| **Institution / College** | **Vardhaman College of Engineering** |
+| **Academic Year** | **2026** |
 
 </div>
 
@@ -21,9 +27,9 @@
 
 ## 📌 Project Overview
 
-**FaceSync** is an enterprise-grade, privacy-compliant facial biometric attendance management system built for educational institutions, universities, corporate workplaces, and research labs. 
+**FaceSync** is an enterprise-grade, privacy-compliant facial biometric attendance management system engineered for educational institutions, engineering colleges, universities, and enterprise workplaces.
 
-The system leverages computer vision deep feature extraction and cosine similarity ensemble matching to deliver sub-second (<100ms) automatic attendance check-ins through a live camera kiosk, backed by passive anti-spoofing filters, automated shift/grace-period rules, and encrypted biometric storage.
+Developed at **Vardhaman College of Engineering** by **A Vivek Goud (Computer Science and Engineering)**, the system leverages computer vision deep texture/gradient feature extraction and cosine similarity ensemble matching to deliver sub-second (<100ms) automatic attendance check-ins through a live camera kiosk, backed by passive anti-spoofing filters, automated shift/grace-period rules, and AES-256 encrypted biometric storage.
 
 ---
 
@@ -42,7 +48,7 @@ The system leverages computer vision deep feature extraction and cosine similari
   - 🔴 **Red:** Anti-spoofing warning or quality alert.
 - **Anti-Spoofing & Liveness Verification:** Passive texture frequency and YCrCb chromatic distribution analysis to reject printed photo and phone-screen replay spoof attacks.
 - **Duplicate Check-in Prevention:** Configurable cooldown period (default: 15 minutes) to avoid redundant duplicate check-ins.
-- **Audio Feedback:** Synthesizes Web Audio API check-in chimes on successful verification.
+- **Smart Pause & Audio Feedback:** Pauses for 3.5 seconds with confirmation chime upon verified check-in.
 - **Live Stream Ticker:** Displays real-time side ticker of the latest attendees.
 
 ### 3. ⏱️ Smart Attendance Rules Engine & Shift Calculation
@@ -72,7 +78,7 @@ The system leverages computer vision deep feature extraction and cosine similari
 ### 6. 📊 Multi-Format Report Generator
 - **Excel (.xlsx):** Formatted spreadsheets with KPI summary headers, status badges, and auto-adjusted columns using `openpyxl`.
 - **PDF Export:** Landscape PDF documents generated via `ReportLab` featuring organization branding, date range filters, summary statistics table, and detailed records table.
-- **CSV Export:** UTF-8 BOM formatted tabular data for integration into legacy payroll or SIS systems.
+- **CSV Export:** UTF-8 BOM formatted tabular data for integration into legacy college management or ERP systems.
 
 ### 7. 🔐 Security, RBAC & Audit Trail
 - **AES-256 Biometric Vector Encryption:** All facial feature vectors are encrypted at rest using `cryptography.fernet`.
@@ -108,6 +114,7 @@ face_attendance_system/
 ├── requirements.txt               # Dependencies
 ├── Dockerfile                     # Production container image
 ├── docker-compose.yml             # Container orchestration
+├── render.yaml                    # Render.com 1-click cloud deployment blueprint
 ├── start_service.bat              # Windows 1-click launcher
 ├── push_to_github.bat             # 1-click GitHub push script
 └── README.md
@@ -119,7 +126,7 @@ face_attendance_system/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/<YOUR_USERNAME>/face-recognition-attendance.git
+git clone https://github.com/avivekgoud/face-recognition-attendance.git
 cd face-recognition-attendance
 ```
 
@@ -144,16 +151,6 @@ python run.py
 
 ---
 
-## 🐳 Docker Deployment
-
-Deploy with 1 command using Docker Compose:
-```bash
-docker compose up -d --build
-```
-Access the application at `http://localhost:8000`.
-
----
-
 ## 🧪 Running Automated Tests
 
 ```bash
@@ -163,15 +160,16 @@ python tests/test_api_endpoints.py
 
 ---
 
-## 👨‍💻 Author & Project Details
+## 👨‍💻 Author & Academic Information
 
-- **Developer:** **A Vivek Goud**
-- **Branch / Major:** **Computer Science & Engineering**
-- **Project:** Face Recognition Attendance Management System (FaceSync)
+- **Student Name:** **A VIVEK GOUD**
+- **Branch / Major:** **Computer Science and Engineering**
+- **College:** **Vardhaman College of Engineering**
+- **Project Title:** Face Recognition Attendance Management System (FaceSync)
 - **Year:** 2026
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE) - Copyright &copy; 2026 **A VIVEK GOUD (Vardhaman College of Engineering)**.

@@ -13,7 +13,7 @@ UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 class Settings(BaseModel):
     PROJECT_NAME: str = "FaceSync Attendance"
     PROJECT_VERSION: str = "2.0.0"
-    ORGANIZATION_NAME: str = "Apex Global Academy & Workspaces"
+    ORGANIZATION_NAME: str = "Vardhaman College of Engineering"
     
     # Database
     DATABASE_URL: str = f"sqlite:///{DATA_DIR / 'attendance.db'}"
