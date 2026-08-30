@@ -311,7 +311,7 @@ def erase_biometric_data(
     id: int,
     request: Request,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     """
     Right-to-be-Forgotten: Purges all encrypted face vectors and enrollment photos for this person.
@@ -348,7 +348,7 @@ def delete_person(
     id: int,
     request: Request,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     person = db.query(Person).filter(Person.id == id).first()
     if not person:

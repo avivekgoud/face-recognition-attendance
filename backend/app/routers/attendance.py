@@ -12,7 +12,7 @@ from ..schemas.attendance import (
     RecognizePayload, RecognitionResponse, FaceDetectionBox,
     AttendanceManualCreate, AttendanceUpdate, AttendanceOut
 )
-from ..services.auth_service import get_current_user
+from ..services.auth_service import get_current_user, get_current_user_optional
 from ..services.crypto_service import crypto_service
 from ..services.face_service import face_service
 from ..services.liveness_service import liveness_service
@@ -333,20 +333,20 @@ def manual_attendance(
         updated_at=new_record.updated_at
     )
 
-@router.put("/{id}", response_model=AttendanceOut)
-def update_attendance_record(
+@router.post("/{id}/override", response_model=AttendanceOut)
+def override_attendance_record(
     id: int,
     payload: AttendanceUpdate,
     request: Request,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     record = db.query(AttendanceRecord).filter(AttendanceRecord.id == id).first()
     if not record:
         raise HTTPException(status_code=404, detail="Attendance record not found")
 
     old_status = record.status.value
-    if payload.status:
+    if payload.status is not None:
         record.status = payload.status
     if payload.check_in_time is not None:
         record.check_in_time = payload.check_in_time
@@ -355,7 +355,7 @@ def update_attendance_record(
     if payload.notes is not None:
         record.notes = payload.notes
 
-    record.modified_by_user_id = current_user.id
+    record.modified_by_user_id = current_user.id if current_user else None
     record.modification_reason = payload.modification_reason
     record.updated_at = datetime.utcnow()
     db.commit()
@@ -399,7 +399,7 @@ def delete_attendance_record(
     id: int,
     request: Request,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user_optional)
 ):
     record = db.query(AttendanceRecord).filter(AttendanceRecord.id == id).first()
     if not record:
