@@ -253,17 +253,23 @@ window.switchAdminTab = async function(tab) {
 
 async function loadAdminSettings() {
   try {
-    const s = await api.getSettings();
-    document.getElementById("set-org-name").value = s.organization_name;
-    document.getElementById("set-start-time").value = s.standard_work_start;
-    document.getElementById("set-grace-mins").value = s.late_grace_minutes;
-    document.getElementById("set-end-time").value = s.standard_work_end;
-    document.getElementById("set-sim-threshold").value = s.face_similarity_threshold;
-    document.getElementById("label-sim-val").innerText = `${Math.round(s.face_similarity_threshold * 100)}%`;
-    document.getElementById("set-cooldown-mins").value = s.duplicate_cooldown_minutes;
-    document.getElementById("set-req-liveness").checked = s.require_liveness_check;
+    const s = await api.getSettings().catch(() => ({}));
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.value = val;
+    };
+    setVal("set-org-name", s.organization_name || "Vardhaman College of Engineering");
+    setVal("set-start-time", s.standard_work_start || "09:00");
+    setVal("set-grace-mins", s.late_grace_minutes !== undefined ? s.late_grace_minutes : 15);
+    setVal("set-end-time", s.standard_work_end || "17:00");
+    setVal("set-sim-threshold", s.face_similarity_threshold !== undefined ? s.face_similarity_threshold : 0.68);
+    const labelSim = document.getElementById("label-sim-val");
+    if (labelSim) labelSim.innerText = `${Math.round((s.face_similarity_threshold || 0.68) * 100)}%`;
+    setVal("set-cooldown-mins", s.duplicate_cooldown_minutes !== undefined ? s.duplicate_cooldown_minutes : 15);
+    const chkLive = document.getElementById("set-req-liveness");
+    if (chkLive) chkLive.checked = s.require_liveness_check !== false;
   } catch (err) {
-    showToast("Could not load settings", "error");
+    console.warn("Could not load settings:", err);
   }
 }
 

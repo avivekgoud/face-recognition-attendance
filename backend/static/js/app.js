@@ -35,31 +35,43 @@ window.navigateTo = async function(viewName, params = {}) {
     </div>
   `;
 
-  // Render view
-  switch (viewName) {
-    case "dashboard":
-      await window.renderDashboardView(container);
-      break;
-    case "live":
-      await window.renderLiveCameraView(container);
-      break;
-    case "registration":
-      await window.renderRegistrationView(container);
-      break;
-    case "people":
-      await window.renderPeopleView(container);
-      break;
-    case "history":
-      await window.renderHistoryView(container);
-      break;
-    case "reports":
-      await window.renderReportsView(container);
-      break;
-    case "admin":
-      await window.renderAdminView(container);
-      break;
-    default:
-      await window.renderDashboardView(container);
+  try {
+    switch (viewName) {
+      case "dashboard":
+        await window.renderDashboardView(container);
+        break;
+      case "live":
+        await window.renderLiveCameraView(container);
+        break;
+      case "registration":
+        await window.renderRegistrationView(container);
+        break;
+      case "people":
+        await window.renderPeopleView(container);
+        break;
+      case "history":
+        await window.renderHistoryView(container);
+        break;
+      case "reports":
+        await window.renderReportsView(container);
+        break;
+      case "admin":
+      case "settings":
+        await window.renderAdminView(container);
+        break;
+      default:
+        await window.renderDashboardView(container);
+    }
+  } catch (err) {
+    console.error("View rendering error:", err);
+    container.innerHTML = `
+      <div class="max-w-md mx-auto py-16 text-center space-y-4">
+        <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto text-xl font-bold">!</div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-slate-100">Unable to Load View</h3>
+        <p class="text-xs text-slate-500">${err.message || 'An error occurred while loading this page.'}</p>
+        <button onclick="window.navigateTo('${viewName}')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl transition-all">Try Again</button>
+      </div>
+    `;
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
