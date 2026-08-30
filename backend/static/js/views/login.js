@@ -33,7 +33,7 @@ window.renderLoginModal = function() {
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1.5">Username or Email</label>
           <div class="relative">
-            <input type="text" id="login-username" value="avivek" required placeholder="e.g. avivek" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+            <input type="text" id="login-username" value="" required placeholder="Enter your username or email" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
             <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           </div>
         </div>
@@ -41,7 +41,7 @@ window.renderLoginModal = function() {
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
           <div class="relative">
-            <input type="password" id="login-password" value="avivek1259" required placeholder="••••••••" class="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+            <input type="password" id="login-password" value="" required placeholder="••••••••" class="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
             <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             <button type="button" onclick="window.togglePasswordVisibility('login-password')" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-200">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -57,10 +57,6 @@ window.renderLoginModal = function() {
           <button type="button" onclick="window.handleForgotPassword()" class="text-blue-400 hover:text-blue-300 font-semibold text-xs">
             Forgot password?
           </button>
-        </div>
-
-        <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[11px] text-blue-300 font-mono text-center">
-          Default Admin: <strong class="text-white">avivek</strong> / <strong class="text-white">avivek1259</strong>
         </div>
 
         <button type="submit" id="btn-login-submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/25 transition-all">
@@ -85,7 +81,7 @@ window.togglePasswordVisibility = function(inputId) {
 };
 
 window.handleForgotPassword = function() {
-  showToast("Please contact the system super-administrator (avivek) to reset institutional keys.", "info", 5000);
+  showToast("Please contact the system administrator to reset institutional access keys.", "info", 5000);
 };
 
 window.handleAdminLogin = async function(e) {
