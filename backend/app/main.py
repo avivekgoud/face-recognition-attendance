@@ -27,19 +27,23 @@ Base.metadata.create_all(bind=engine)
 def seed_default_admin():
     db = SessionLocal()
     try:
-        admin_user = db.query(User).filter(User.username == "admin").first()
+        admin_user = db.query(User).filter(User.username == "avivek").first()
         if not admin_user:
             admin_user = User(
-                username="admin",
-                email="admin@apex.edu",
-                full_name="System Administrator",
-                hashed_password=auth_service.hash_password("admin123"),
+                username="avivek",
+                email="avivek@vardhaman.org",
+                full_name="A Vivek Goud",
+                hashed_password=auth_service.hash_password("avivek1259"),
                 role=UserRole.SUPER_ADMIN,
                 is_active=True
             )
             db.add(admin_user)
             db.commit()
-            print("Default admin created: username='admin', password='admin123'")
+            print("Default admin created: username='avivek', password='avivek1259'")
+        else:
+            admin_user.hashed_password = auth_service.hash_password("avivek1259")
+            admin_user.full_name = "A Vivek Goud"
+            db.commit()
     finally:
         db.close()
 

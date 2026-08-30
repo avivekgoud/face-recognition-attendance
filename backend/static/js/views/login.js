@@ -25,14 +25,14 @@ window.renderLoginModal = function() {
       <form id="admin-login-form" onsubmit="window.handleAdminLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Username</label>
-          <input type="text" id="login-username" value="admin" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-blue-500">
+          <input type="text" id="login-username" value="avivek" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-blue-500">
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Password</label>
-          <input type="password" id="login-password" value="admin123" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-blue-500">
+          <input type="password" id="login-password" value="avivek1259" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-sm focus:ring-2 focus:ring-blue-500">
           <div class="flex items-center justify-between mt-1 text-[11px] text-slate-400">
-            <span>Default demo: admin / admin123</span>
+            <span>Credentials: avivek / avivek1259</span>
           </div>
         </div>
 

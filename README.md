@@ -163,8 +163,8 @@ python run.py
 - Interactive OpenAPI Documentation: `http://127.0.0.1:8000/docs`
 
 Default Administrator Credentials:
-- **Username:** `admin`
-- **Password:** `admin123`
+- **Username:** `avivek`
+- **Password:** `avivek1259`
 
 ---
 

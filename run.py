@@ -37,7 +37,7 @@ def main():
     print("[+] Application Ready!")
     print(f"[*] Access Live Dashboard: http://127.0.0.1:8000")
     print(f"[*] Interactive API Docs:  http://127.0.0.1:8000/docs")
-    print("[*] Default Admin Login:   Username: admin | Password: admin123")
+    print("[*] Default Admin Login:   Username: avivek | Password: avivek1259")
     print("-" * 70 + "\n")
 
     port = int(os.environ.get("PORT", 8000))

@@ -32,7 +32,7 @@ def test_api():
     print("  [+] GET / serves SPA index.html")
 
     # 4. Admin Login
-    res = client.post("/api/auth/login", json={"username": "admin", "password": "admin123"})
+    res = client.post("/api/auth/login", json={"username": "avivek", "password": "avivek1259"})
     assert res.status_code == 200, f"Login failed: {res.text}"
     token = res.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
