@@ -32,12 +32,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize Database Schema & Seed on first run
-Base.metadata.create_all(bind=engine)
-db = SessionLocal()
-if db.query(Department).count() == 0:
-    seed_sample_data(db)
-db.close()
+# Initialize Database Schema & Seed once with caching
+@st.cache_resource
+def init_db_once():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        if db.query(Department).count() == 0:
+            seed_sample_data(db)
+    finally:
+        db.close()
+    return True
+
+init_db_once()
 
 # Custom CSS for Modern Styling
 st.markdown("""
