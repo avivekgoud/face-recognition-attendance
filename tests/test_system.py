@@ -90,6 +90,14 @@ def test_all():
         db.commit()
         db.refresh(person)
 
+    # Clean previous test record for today if present
+    from datetime import date
+    db.query(AttendanceRecord).filter(
+        AttendanceRecord.person_id == person.id,
+        AttendanceRecord.date == date.today()
+    ).delete()
+    db.commit()
+
     # First check-in
     rec1, act1, msg1 = attendance_service.process_face_attendance(db, person, confidence=0.96, liveness_score=0.92, cooldown_minutes=15)
     assert act1 in ["NEW_CHECK_IN", "COOLDOWN_SUPPRESSED"], f"Unexpected action: {act1}"
