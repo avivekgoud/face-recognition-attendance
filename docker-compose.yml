@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  facesync-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: facesync_attendance
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=face_attendance_jwt_secret_key_2026_super_secure_antigravity
+      - BIOMETRIC_ENCRYPTION_KEY=U1Z4c3J3VnBvQzdrS3BhWnJ1WHZwbk1qd1Fxc3Z4Y3Y=
+    volumes:
+      - facesync_data:/app/backend/data
+
+volumes:
+  facesync_data:
+    driver: local
