@@ -935,7 +935,7 @@ window.saveGlobalSettings = async function() {
     // Save to backend API if available
     if (typeof api !== 'undefined' && api && typeof api.updateSettings === 'function') {
       await api.updateSettings({
-        organization_name: "Vardhaman College of Engineering",
+        organization_name: "FaceSync AI Enterprise",
         standard_work_start: shiftStart,
         late_grace_minutes: graceMins,
         standard_work_end: shiftEnd,

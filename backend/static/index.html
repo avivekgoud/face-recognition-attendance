@@ -47,16 +47,24 @@
           
           <!-- Logo & Organization Brand -->
           <div class="flex items-center gap-3 shrink-0 cursor-pointer" onclick="window.navigateTo('dashboard')">
-            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Biometric Camera Framing Reticles -->
+                <path d="M4 8V5C4 4.44772 4.44772 4 5 4H8"/>
+                <path d="M16 4H19C19.5523 4 20 4.44772 20 5V8"/>
+                <path d="M4 16V19C4 19.5523 4.44772 20 5 20H8"/>
+                <path d="M16 20H19C19.5523 20 20 19.5523 20 19V16"/>
+                <!-- Central Biometric Face Node & Scanning Contour -->
+                <circle cx="12" cy="10" r="3"/>
+                <path d="M7 16.5C8.3 17.8 10.1 18.5 12 18.5C13.9 18.5 15.7 17.8 17 16.5"/>
+                <circle cx="12" cy="10" r="1" fill="currentColor"/>
               </svg>
             </div>
             <div>
               <div class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-                FaceSync <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">AI</span>
+                FaceSync <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-600 text-white shadow-xs">AI</span>
               </div>
-              <div class="text-[10px] text-slate-400 font-medium">Vardhaman College of Engineering</div>
+              <div class="text-[10px] text-blue-500 dark:text-blue-400 font-semibold tracking-wider uppercase">Biometric Intelligence</div>
             </div>
           </div>
 
@@ -147,7 +155,7 @@
       <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>FaceSync AI &bull; Developed by <strong>A Vivek Goud</strong> (CSE) &bull; <strong>Vardhaman College of Engineering</strong></span>
+          <span>FaceSync AI &bull; Developed by <strong>A Vivek Goud</strong> (CSE) &bull; Enterprise Biometrics Edition</span>
         </div>
         <div>
           <span>AES-256 Vector Encryption &bull; Anti-Spoofing Active &bull; Privacy Compliant</span>
@@ -158,16 +166,16 @@
   </div>
 
   <!-- Application Scripts with Cache-Busting Version -->
-  <script src="/static/js/utils/sound.js?v=3.6.0"></script>
-  <script src="/static/js/api.js?v=3.6.0"></script>
-  <script src="/static/js/views/dashboard.js?v=3.6.0"></script>
-  <script src="/static/js/views/live_camera.js?v=3.6.0"></script>
-  <script src="/static/js/views/registration.js?v=3.6.0"></script>
-  <script src="/static/js/views/people.js?v=3.6.0"></script>
-  <script src="/static/js/views/history.js?v=3.6.0"></script>
-  <script src="/static/js/views/reports.js?v=3.6.0"></script>
-  <script src="/static/js/views/admin.js?v=3.6.0"></script>
-  <script src="/static/js/views/login.js?v=3.6.0"></script>
-  <script src="/static/js/app.js?v=3.6.0"></script>
+  <script src="/static/js/utils/sound.js?v=3.7.0"></script>
+  <script src="/static/js/api.js?v=3.7.0"></script>
+  <script src="/static/js/views/dashboard.js?v=3.7.0"></script>
+  <script src="/static/js/views/live_camera.js?v=3.7.0"></script>
+  <script src="/static/js/views/registration.js?v=3.7.0"></script>
+  <script src="/static/js/views/people.js?v=3.7.0"></script>
+  <script src="/static/js/views/history.js?v=3.7.0"></script>
+  <script src="/static/js/views/reports.js?v=3.7.0"></script>
+  <script src="/static/js/views/admin.js?v=3.7.0"></script>
+  <script src="/static/js/views/login.js?v=3.7.0"></script>
+  <script src="/static/js/app.js?v=3.7.0"></script>
 </body>
 </html>
