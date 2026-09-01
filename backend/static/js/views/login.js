@@ -66,6 +66,10 @@ window.renderLoginModal = function() {
     </div>
   `;
 
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) window.closeLoginModal();
+  });
+
   document.body.appendChild(modal);
 };
 
@@ -73,6 +77,13 @@ window.closeLoginModal = function() {
   const modal = document.getElementById("auth-login-modal");
   if (modal) modal.remove();
 };
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    window.closeLoginModal();
+    document.getElementById("change-pwd-modal")?.remove();
+  }
+});
 
 window.togglePasswordVisibility = function(inputId) {
   const el = document.getElementById(inputId);

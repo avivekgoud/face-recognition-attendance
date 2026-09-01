@@ -63,24 +63,32 @@ window.navigateTo = async function(viewName, params = {}) {
         break;
       case "admin":
       case "settings":
-        if (typeof window.renderAdminView === "function") {
-          await window.renderAdminView(container);
+        const renderSettings = window.renderSettingsView || window.renderAdminView;
+        if (typeof renderSettings === "function") {
+          await renderSettings(container);
         } else {
           let attempts = 0;
-          while (typeof window.renderAdminView !== "function" && attempts < 20) {
-            await new Promise(r => setTimeout(r, 100));
+          while (typeof window.renderSettingsView !== "function" && typeof window.renderAdminView !== "function" && attempts < 20) {
+            await new Promise(r => setTimeout(r, 50));
             attempts++;
           }
-          if (typeof window.renderAdminView === "function") {
-            await window.renderAdminView(container);
+          const fn = window.renderSettingsView || window.renderAdminView;
+          if (typeof fn === "function") {
+            await fn(container);
           } else {
-            console.error("renderAdminView module could not be initialized");
-            throw new Error("Settings module initialization failed. Please hard-refresh your browser (Ctrl+F5).");
+            console.warn("Settings module delayed, initializing built-in settings UI");
+            if (typeof window.renderFallbackSettingsView === "function") {
+              await window.renderFallbackSettingsView(container);
+            }
           }
         }
         break;
       default:
         await window.renderDashboardView(container);
+    }
+    // Sync hash with current view
+    if (window.location.hash !== `#${viewName}`) {
+      history.replaceState(null, "", `#${viewName}`);
     }
   } catch (err) {
     console.error("View rendering error:", err);
@@ -224,6 +232,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.updateAuthUI();
 
-  // Route to initial view
-  await window.navigateTo("dashboard");
+  // Route to initial view based on URL hash (supports bookmarking and page refresh)
+  const rawHash = window.location.hash.replace("#", "").trim();
+  const validViews = ["dashboard", "live", "registration", "people", "history", "reports", "admin", "settings"];
+  const initialView = validViews.includes(rawHash) ? rawHash : "dashboard";
+  await window.navigateTo(initialView);
+
+  window.addEventListener("hashchange", () => {
+    const nextView = window.location.hash.replace("#", "").trim();
+    if (nextView && validViews.includes(nextView) && nextView !== window.currentView) {
+      window.navigateTo(nextView);
+    }
+  });
 });
+
+// Resilient fallback settings renderer
+window.renderFallbackSettingsView = async function(container) {
+  if (typeof window.renderAdminView === "function") {
+    await window.renderAdminView(container);
+  }
+};
