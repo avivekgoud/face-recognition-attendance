@@ -39,6 +39,12 @@ def get_runtime_setting_int(db: Session, key: str, default: int) -> int:
             pass
     return default
 
+def get_runtime_setting_bool(db: Session, key: str, default: bool) -> bool:
+    s = db.query(SystemSetting).filter(SystemSetting.key == key).first()
+    if s:
+        return s.value.lower() in ["true", "1", "yes"]
+    return default
+
 @router.post("/recognize", response_model=RecognitionResponse)
 def recognize_face(payload: RecognizePayload, db: Session = Depends(get_db)):
     """
@@ -70,7 +76,8 @@ def recognize_face(payload: RecognizePayload, db: Session = Depends(get_db)):
             liveness_passed=True,
             liveness_score=1.0,
             attendance_recorded=False,
-            message="No face detected in camera view"
+            message="Position face in camera view",
+            bounding_box=None
         )
 
     # Select the primary / largest face
@@ -79,13 +86,20 @@ def recognize_face(payload: RecognizePayload, db: Session = Depends(get_db)):
     box_obj = FaceDetectionBox(**bbox)
 
     # 2. Liveness / Anti-spoofing verification
-    liveness_thresh = get_runtime_setting_float(db, "liveness_threshold", settings.LIVENESS_THRESHOLD)
-    is_live, liveness_score, liveness_msg = liveness_service.evaluate_liveness(
-        img,
-        bbox=bbox,
-        client_liveness_score=payload.liveness_score,
-        min_threshold=liveness_thresh
-    )
+    require_liveness = get_runtime_setting_bool(db, "require_liveness_check", True)
+    liveness_thresh = get_runtime_setting_float(db, "liveness_threshold", 0.40)
+    
+    if require_liveness:
+        is_live, liveness_score, liveness_msg = liveness_service.evaluate_liveness(
+            img,
+            bbox=bbox,
+            client_liveness_score=payload.liveness_score,
+            min_threshold=liveness_thresh
+        )
+    else:
+        is_live = True
+        liveness_score = 1.0
+        liveness_msg = "Liveness check bypassed by policy"
 
     if not is_live:
         return RecognitionResponse(
@@ -120,7 +134,7 @@ def recognize_face(payload: RecognizePayload, db: Session = Depends(get_db)):
             liveness_passed=True,
             liveness_score=liveness_score,
             attendance_recorded=False,
-            message="No registered faces found in database",
+            message="No registered faces found in database. Please register a face first.",
             bounding_box=box_obj
         )
 

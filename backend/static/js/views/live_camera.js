@@ -193,7 +193,13 @@ window.startCameraStream = async function(deviceId = null) {
   };
 
   try {
-    liveStream = await navigator.mediaDevices.getUserMedia(constraints);
+    try {
+      liveStream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e1) {
+      console.warn("Primary constraints failed, trying basic video:", e1);
+      liveStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    }
+
     video.srcObject = liveStream;
     if (placeholder) placeholder.classList.add("hidden");
 
@@ -266,11 +272,11 @@ async function captureAndRecognizeFrame() {
     if (result.recognized) {
       handleRecognitionSuccess(result);
     } else {
-      updateHudStatus(result.message || "Scanning...");
+      updateHudStatus(result.message || "Scanning for faces...");
     }
 
   } catch (err) {
-    // Network or processing error
+    updateHudStatus("Scanning for faces...");
   } finally {
     isProcessingFrame = false;
   }
@@ -306,11 +312,11 @@ function drawBoundingBox(canvas, video, result) {
     ctx.strokeStyle = "#10b981"; // Emerald green
     ctx.fillStyle = "rgba(16, 185, 129, 0.15)";
   } else if (!result.liveness_passed) {
-    ctx.strokeStyle = "#ef4444"; // Red for spoof warning
-    ctx.fillStyle = "rgba(239, 68, 68, 0.15)";
+    ctx.strokeStyle = "#f59e0b"; // Amber warning for liveness
+    ctx.fillStyle = "rgba(245, 158, 11, 0.15)";
   } else {
-    ctx.strokeStyle = "#94a3b8"; // Neutral gray for unknown
-    ctx.fillStyle = "rgba(148, 163, 184, 0.1)";
+    ctx.strokeStyle = "#3b82f6"; // Vibrant blue for detected face
+    ctx.fillStyle = "rgba(59, 130, 246, 0.1)";
   }
 
   // Draw rounded bounding box
@@ -320,13 +326,26 @@ function drawBoundingBox(canvas, video, result) {
   ctx.fill();
 
   // Draw name tag above box
-  const labelText = result.recognized 
-    ? `${result.full_name} (${(result.confidence * 100).toFixed(0)}%)`
-    : result.liveness_passed ? "Unknown Face" : "Spoof Warning";
+  let labelText = "Face Detected";
+  let tagColor = "#2563eb";
+
+  if (result.recognized) {
+    labelText = `${result.full_name} (${(result.confidence * 100).toFixed(0)}%)`;
+    tagColor = "#10b981";
+  } else if (!result.liveness_passed) {
+    labelText = "Please hold steady";
+    tagColor = "#d97706";
+  } else if (result.message && result.message.includes("No registered")) {
+    labelText = "Face Detected";
+    tagColor = "#2563eb";
+  } else {
+    labelText = `Scanning (${(result.confidence * 100).toFixed(0)}%)`;
+    tagColor = "#2563eb";
+  }
 
   ctx.font = "bold 14px 'Segoe UI', sans-serif";
   const textWidth = ctx.measureText(labelText).width;
-  ctx.fillStyle = result.recognized ? "#10b981" : result.liveness_passed ? "#64748b" : "#ef4444";
+  ctx.fillStyle = tagColor;
   ctx.beginPath();
   ctx.roundRect(x, y - 28, textWidth + 16, 24, 6);
   ctx.fill();

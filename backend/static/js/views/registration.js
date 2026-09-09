@@ -194,12 +194,18 @@ async function startRegCamera() {
   }
 
   try {
-    regStream = await navigator.mediaDevices.getUserMedia({
-      video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
-    });
+    try {
+      regStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
+      });
+    } catch (e1) {
+      console.warn("Primary reg constraints failed, trying basic video:", e1);
+      regStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    }
     video.srcObject = regStream;
   } catch (e) {
     console.warn("Could not start registration camera", e);
+    showToast("Could not access camera for registration. Please check device permissions.", "warning");
   }
 }
 

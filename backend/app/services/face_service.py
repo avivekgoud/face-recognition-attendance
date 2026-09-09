@@ -74,38 +74,46 @@ class FaceService:
     def detect_faces(self, img: np.ndarray) -> List[Dict[str, Any]]:
         """
         Detects face candidate regions in the image:
-        Uses skin-tone chrominance distribution (YCrCb) and morphological analysis
-        to robustly identify human facial regions at high speed.
+        Uses multi-color-space skin detection (YCrCb + HSV) and morphological analysis
+        to robustly identify human facial regions across all skin tones and lighting.
         """
         if img is None or img.size == 0:
             return []
 
         h_img, w_img = img.shape[:2]
         
-        # 1. Skin-color segmentation in YCrCb space
+        # 1. Broad YCrCb skin-color segmentation (Cr: 125-185, Cb: 70-135)
         ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
-        # Standard human skin chrominance range (Cr: 133-173, Cb: 77-127)
-        lower_skin = np.array([0, 130, 75], dtype=np.uint8)
-        upper_skin = np.array([255, 180, 130], dtype=np.uint8)
-        mask = cv2.inRange(ycrcb, lower_skin, upper_skin)
+        lower_ycrcb = np.array([0, 125, 70], dtype=np.uint8)
+        upper_ycrcb = np.array([255, 185, 135], dtype=np.uint8)
+        mask_ycrcb = cv2.inRange(ycrcb, lower_ycrcb, upper_ycrcb)
 
-        # Morphological clean up
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        mask = cv2.erode(mask, kernel, iterations=1)
-        mask = cv2.dilate(mask, kernel, iterations=2)
+        # 2. HSV skin-color segmentation (Hue 0-28 for natural tones)
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        lower_hsv = np.array([0, 25, 40], dtype=np.uint8)
+        upper_hsv = np.array([28, 255, 255], dtype=np.uint8)
+        mask_hsv = cv2.inRange(hsv, lower_hsv, upper_hsv)
+
+        # Combined multi-spectral mask
+        combined_mask = cv2.bitwise_or(mask_ycrcb, mask_hsv)
+
+        # Morphological filtering to remove noise and bridge facial contours
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
+        mask = cv2.morphologyEx(combined_mask, cv2.MORPH_CLOSE, kernel, iterations=2)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
 
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         results = []
-        min_area = (h_img * w_img) * 0.02 # At least 2% of frame
+        min_area = (h_img * w_img) * 0.015 # At least 1.5% of frame
 
         for c in contours:
             area = cv2.contourArea(c)
             if area > min_area:
                 x, y, w, h = cv2.boundingRect(c)
-                # Aspect ratio check for human face (typically 0.7 to 1.6)
                 aspect_ratio = float(h) / max(w, 1)
-                if 0.65 <= aspect_ratio <= 2.0:
+                # Human face aspect ratio range
+                if 0.55 <= aspect_ratio <= 2.2:
                     is_good, reason, quality = self.check_image_quality(img, (x, y, w, h))
                     results.append({
                         "bbox": {"x": int(x), "y": int(y), "width": int(w), "height": int(h)},
@@ -114,23 +122,12 @@ class FaceService:
                         "quality_score": quality
                     })
 
-        # If skin-detector found candidates, return them sorted by area
         if results:
             results.sort(key=lambda r: r["bbox"]["width"] * r["bbox"]["height"], reverse=True)
             return results
 
-        # Fallback: Assume center region of the frame if high variance
-        is_good, reason, quality = self.check_image_quality(img)
-        cx = int(w_img * 0.2)
-        cy = int(h_img * 0.15)
-        cw = int(w_img * 0.6)
-        ch = int(h_img * 0.7)
-        return [{
-            "bbox": {"x": cx, "y": cy, "width": cw, "height": ch},
-            "is_good_quality": is_good,
-            "quality_reason": reason,
-            "quality_score": quality
-        }]
+        # If no face candidate is found, return empty list (do not invent a fake box)
+        return []
 
     def extract_embedding(self, img: np.ndarray, bbox: Optional[Dict[str, int]] = None) -> Optional[List[float]]:
         """
