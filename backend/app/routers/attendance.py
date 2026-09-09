@@ -113,7 +113,8 @@ def recognize_face(payload: RecognizePayload, db: Session = Depends(get_db)):
         )
 
     # 3. Extract Deep Feature Vector
-    query_vector = face_service.extract_embedding(img, bbox=bbox)
+    raw_row = primary_face.get("raw_face_row")
+    query_vector = face_service.extract_embedding(img, bbox=bbox, raw_face_row=raw_row)
     if not query_vector:
         return RecognitionResponse(
             recognized=False,

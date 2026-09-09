@@ -13,7 +13,7 @@ UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 class Settings(BaseModel):
     PROJECT_NAME: str = "FaceSync Attendance"
     PROJECT_VERSION: str = "2.0.0"
-    ORGANIZATION_NAME: str = "Vardhaman College of Engineering"
+    ORGANIZATION_NAME: str = "FaceSync AI"
     
     # Database
     DATABASE_URL: str = f"sqlite:///{DATA_DIR / 'attendance.db'}"
@@ -30,7 +30,7 @@ class Settings(BaseModel):
     )
     
     # Face Recognition Thresholds
-    FACE_SIMILARITY_THRESHOLD: float = 0.68  # Cosine similarity threshold (0.0 to 1.0)
+    FACE_SIMILARITY_THRESHOLD: float = 0.65  # Calibrated cosine similarity threshold (0.0 to 1.0)
     LIVENESS_THRESHOLD: float = 0.55         # Liveness confidence score
     DUPLICATE_COOLDOWN_MINUTES: int = 15     # Cooldown before registering another check-in
     
