@@ -10,6 +10,35 @@ STATIC_DIR = BASE_DIR / "static"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
+def _load_or_generate_key(env_var: str, filename: str, is_fernet: bool = False) -> str:
+    """Loads a secret from environment, local persistent data file, or generates a secure random key."""
+    val = os.getenv(env_var)
+    if val and val.strip():
+        return val.strip()
+
+    key_path = DATA_DIR / filename
+    try:
+        if key_path.exists():
+            content = key_path.read_text(encoding="utf-8").strip()
+            if content:
+                return content
+    except Exception:
+        pass
+
+    if is_fernet:
+        from cryptography.fernet import Fernet
+        new_val = Fernet.generate_key().decode("utf-8")
+    else:
+        import secrets
+        new_val = secrets.token_hex(32)
+
+    try:
+        key_path.write_text(new_val, encoding="utf-8")
+    except Exception:
+        pass
+
+    return new_val
+
 class Settings(BaseModel):
     PROJECT_NAME: str = "FaceSync Attendance"
     PROJECT_VERSION: str = "2.0.0"
@@ -18,16 +47,13 @@ class Settings(BaseModel):
     # Database
     DATABASE_URL: str = f"sqlite:///{DATA_DIR / 'attendance.db'}"
     
-    # Security & Cryptography
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "face_attendance_jwt_secret_key_2026_super_secure_antigravity")
+    # Security & Cryptography (Dynamic & Secure: never hardcode secrets)
+    SECRET_KEY: str = _load_or_generate_key("SECRET_KEY", ".secret_key", is_fernet=False)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
     
     # AES-256 Fernet Key for Biometric Vector Encryption (32 url-safe base64-encoded bytes)
-    BIOMETRIC_ENCRYPTION_KEY: str = os.getenv(
-        "BIOMETRIC_ENCRYPTION_KEY", 
-        "U1Z4c3J3VnBvQzdrS3BhWnJ1WHZwbk1qd1Fxc3Z4Y3Y="
-    )
+    BIOMETRIC_ENCRYPTION_KEY: str = _load_or_generate_key("BIOMETRIC_ENCRYPTION_KEY", ".biometric_key", is_fernet=True)
     
     # Face Recognition Thresholds
     FACE_SIMILARITY_THRESHOLD: float = 0.65  # Calibrated cosine similarity threshold (0.0 to 1.0)

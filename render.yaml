@@ -9,6 +9,6 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: BIOMETRIC_ENCRYPTION_KEY
-        value: U1Z4c3J3VnBvQzdrS3BhWnJ1WHZwbk1qd1Fxc3Z4Y3Y=
+        generateValue: true
       - key: PYTHON_VERSION
         value: 3.11.9
